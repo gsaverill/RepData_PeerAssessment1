@@ -438,9 +438,13 @@ number <strong>835</strong> with
 <pre><code class="r">total_rows_with_missing_values &lt;- sum(is.na(data_1))
 </code></pre>
 
-<p><strong>Strategy for the imputation of missing data:</strong>
-We&#39;ll create a new data set where for every interval that is missing a step 
-count, we&#39;ll replace the missing value with the mean for that day of the week.</p>
+<p><strong>Strategy for the imputation of missing data:</strong></p>
+
+<p>Recall that we showed that each date that is missing step counts is actually
+missing all the counts for that day.  So it seems reasonable to replace the
+missing counts with the averages for that day.  We&#39;ll create a new data set
+where for every interval that is missing a step count, we&#39;ll replace the
+missing value with the mean for that day of the week.</p>
 
 <pre><code class="r">mean_steps_by_day_of_week &lt;- data_1 %&gt;%
                              group_by(day_of_week) %&gt;%
@@ -449,11 +453,6 @@ count, we&#39;ll replace the missing value with the mean for that day of the wee
 data_2 &lt;- data_1
 for (i in 1:nrow(data_1)) {
     if (is.na(data_2$steps[i])) {
-        data_2$steps[i] &lt;- (
-            mean_steps_by_interval$mean_steps[
-                mean_steps_by_interval$interval == data_2$interval[i]
-            ]
-        )
         data_2$steps[i] &lt;- (
             mean_steps_by_day_of_week$mean_steps[
                 mean_steps_by_day_of_week$day_of_week == data_2$day_of_week[i]

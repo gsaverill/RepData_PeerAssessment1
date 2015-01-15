@@ -292,8 +292,12 @@ total_rows_with_missing_values <- sum(is.na(data_1))
 ```
 
 **Strategy for the imputation of missing data:**
-We'll create a new data set where for every interval that is missing a step 
-count, we'll replace the missing value with the mean for that day of the week.
+
+Recall that we showed that each date that is missing step counts is actually
+missing all the counts for that day.  So it seems reasonable to replace the
+missing counts with the averages for that day.  We'll create a new data set
+where for every interval that is missing a step count, we'll replace the
+missing value with the mean for that day of the week.
 
 
 ```r
@@ -304,11 +308,6 @@ mean_steps_by_day_of_week <- data_1 %>%
 data_2 <- data_1
 for (i in 1:nrow(data_1)) {
     if (is.na(data_2$steps[i])) {
-        data_2$steps[i] <- (
-            mean_steps_by_interval$mean_steps[
-                mean_steps_by_interval$interval == data_2$interval[i]
-            ]
-        )
         data_2$steps[i] <- (
             mean_steps_by_day_of_week$mean_steps[
                 mean_steps_by_day_of_week$day_of_week == data_2$day_of_week[i]
