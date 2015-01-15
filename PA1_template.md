@@ -439,8 +439,8 @@ str(data_2)
 ##  $ day_type   : Factor w/ 2 levels "weekend","weekday": 2 2 2 2 2 2 2 2 2 2 ...
 ```
 
-Now we'll find the average number of steps for each interval 
-across all weekdays and across all weekend days .
+Now we'll find the average number of steps for each interval across all 
+weekdays and across all weekend days .
 
 
 ```r

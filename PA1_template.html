@@ -568,8 +568,8 @@ str(data_2)
 ##  $ day_type   : Factor w/ 2 levels &quot;weekend&quot;,&quot;weekday&quot;: 2 2 2 2 2 2 2 2 2 2 ...
 </code></pre>
 
-<p>Now we&#39;ll find the average number of steps for each interval 
-across all weekdays and across all weekend days .</p>
+<p>Now we&#39;ll find the average number of steps for each interval across all 
+weekdays and across all weekend days .</p>
 
 <pre><code class="r">mean_steps_by_interval_by_day_type &lt;- data_2 %&gt;%
                                       group_by(day_type, interval) %&gt;%
