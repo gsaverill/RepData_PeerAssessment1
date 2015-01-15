@@ -438,7 +438,8 @@ number <strong>835</strong> with
 <pre><code class="r">total_rows_with_missing_values &lt;- sum(is.na(data_1))
 </code></pre>
 
-<p>Create a new data set where for every interval that is missing a step 
+<p><strong>Strategy for the imputation of missing data:</strong>
+We&#39;ll create a new data set where for every interval that is missing a step 
 count, we&#39;ll replace the missing value with the mean for that day of the week.</p>
 
 <pre><code class="r">mean_steps_by_day_of_week &lt;- data_1 %&gt;%

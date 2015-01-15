@@ -291,7 +291,8 @@ Find the total number of rows with missing values.
 total_rows_with_missing_values <- sum(is.na(data_1))
 ```
 
-Create a new data set where for every interval that is missing a step 
+**Strategy for the imputation of missing data:**
+We'll create a new data set where for every interval that is missing a step 
 count, we'll replace the missing value with the mean for that day of the week.
 
 
