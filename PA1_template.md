@@ -279,7 +279,7 @@ print(max_number_of_average_steps)
 
 So the 5-minute interval, on average across all the days in the
 dataset, which contains the maximum number of steps is interval 
-#**835** with 
+number **835** with 
 **206** steps.
 
 ## Imputing missing values
