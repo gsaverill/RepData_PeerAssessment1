@@ -325,7 +325,7 @@ Make a panel plot containing a time series plot of the 5-minute interval
 (x-axis) and the average number of steps taken, averaged across all weekday
 days or weekend days (y-axis).
 
-```{r plot4, fig.height=4}
+```{r plot4}
 title_text <- "Time Series of the Five-minute Intervals Showing Average"
 title_text <- paste(title_text, "\nNumber of Steps Taken on")
 title_text <- paste(title_text, " Weekdays and Weekends")
