@@ -163,7 +163,7 @@ total number of steps for each date. We'll let the NAs propagate in the
 summarize command.  If we chose to set na.rm=TRUE in the summarize command,
 we'd be setting the total_steps value to zero rather than NA for those dates,
 which would artifically lower the mean and median calculations in the next
-steps.  I think that would incorrectly introduce error into the mean and
+steps.  I think that would incorrectly introduce bias into the mean and
 median counts of total steps per day, since they are missing and we don't
 know that they would be zero.  When we  make the histogram, ggplot will by
 default ignore the propagated NA values.
@@ -326,7 +326,7 @@ total_steps_by_date_2 <- data_2 %>%
                          group_by(date) %>%
                          summarize(total_steps = sum(steps))
 
-binwidth_val = round(max(total_steps_by_date_2$total_steps, na.rm=TRUE)/30)
+binwidth_val = round(max(total_steps_by_date_2$total_steps)/30)
 title_text <- "Histogram of Total Steps Taken Each Day"
 title_text <- paste(title_text, "\n(Missing Values Imputed)")
 
