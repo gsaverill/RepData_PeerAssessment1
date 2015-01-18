@@ -7,6 +7,15 @@ output:
 
 ## Loading and preprocessing the data
 
+R librarys to load:
+
+
+```r
+library(dplyr)
+library(ggplot2)
+library(scales)
+```
+
 Here is the URL for the source data .zip archive:
 
 
@@ -37,7 +46,6 @@ read.csv, from the data file into a dplyr data frame tbl.
 
 
 ```r
-library(dplyr)
 data_1 <- tbl_df(read.csv(unz(zipFile, sourceDataFile)))
 str(data_1)
 ```
@@ -184,7 +192,6 @@ binwidth_val = round(max(total_steps_by_date_1$total_steps, na.rm=TRUE)/30)
 title_text <- "Histogram of Total Steps Taken Each Day"
 title_text <- paste(title_text, "\n(Missing Values Ignored)")
 
-library(ggplot2)
 g <- ggplot(total_steps_by_date_1, aes(x=total_steps, fill="salmon"))
 g <- g + geom_histogram(binwidth=binwidth_val)
 g <- g + labs(x = "Total Steps", y = "Count")
@@ -228,28 +235,60 @@ The **median** total number of steps per day is
 
 ## What is the average daily activity pattern?
 
-Find the average number of steps for each interval across all dates, sorted
-in descending order of average step count.
+We'll make a time series plot of the five-minute interval (x-axis) and the
+average number of steps taken, averaged across all days (y-axis).
+
+To do this, we'll first calculate the average number of steps for each
+interval across all dates, sorted in descending order of average step count.
 
 
 ```r
+start_time <- strptime("00:00", "%H:%M")
 mean_steps_by_interval <- data_1 %>%
                           group_by(interval) %>%
                           summarize(mean_steps = mean(steps, na.rm=TRUE)) %>%
+                          arrange(interval) %>%
+                          mutate("time_of_day" = seq(start_time, 
+                                                     length.out=288, 
+                                                     by="5 mins")) %>%
                           arrange(desc(mean_steps))
 ```
 
-Make a time series plot of the five-minute interval (x-axis) and the average
-number of steps taken, averaged across all days (y-axis).
+**Note that intervals on the plot's x-axis will be mapped to time of day.**
+
+The intervals as brought in from the source data set progress like this:
+
+0, 5, 10, ... , 50, 55, 100, 105, ... , 150, 155, 200, ... , 2350, 2355
+
+There is a discontinuous jump from **55 to **00 every time the two
+least-significant digits of the interval reach 55 minutes.  We could just
+plot the step counts againt the raw interval values on the x-axis (and Dr.
+Peng's example panel plot appears to do just that with an x-axis range from 0
+to 2355), but I am going to choose to convert the interval format into time
+of day.  By doing this, datapoints will be plotted at consistent intevals on
+the x-axis as time progresses, and a bit of distoration from the **55 to **00
+jumps will be avoided.  This is a minor issue, but I think that mapping the
+interval number to time of day will result in a time series plot that is
+slightly more faithful to the source data.
+
+You can see that time_of_day is a new variable added to my data frame above.
+
+Now the code for building the plot:
 
 
 ```r
-g <- ggplot(mean_steps_by_interval, aes(x=interval, y = mean_steps))
+title_text <- "Time Series at Five-minute Intervals Showing Number"
+title_text <- paste(title_text, "\nof Steps Taken Averaged Across All Days")
+
+g <- ggplot(mean_steps_by_interval, aes(x=time_of_day, y = mean_steps))
 g <- g + geom_line(color = "blue")
-g <- g + labs(x = "Interval", y = "Average Steps Taken")
-title_text <- "Time Series of the Five-minute Intervals"
-title_text <- paste(title_text, "\nShowing Average Number of Steps Taken")
+g <- g + labs(x = "Time of Day",
+              y = "Average Steps Taken")
 g <- g + labs(title = title_text)
+g <- g + scale_x_datetime(labels = date_format("%H:%M"), 
+                          breaks = "4 hours",
+                          minor_breaks = "1 hours"
+                         )
 plot(g)
 ```
 
@@ -280,7 +319,8 @@ print(max_number_of_average_steps)
 So the 5-minute interval, on average across all the days in the
 dataset, which contains the maximum number of steps is interval 
 number **835** with 
-**206** steps.
+**206** steps.  Interval 835 corresponds
+to 8:35 a.m.
 
 ## Imputing missing values
 
@@ -289,7 +329,15 @@ Find the total number of rows with missing values.
 
 ```r
 total_rows_with_missing_values <- sum(is.na(data_1))
+print(total_rows_with_missing_values)
 ```
+
+```
+## [1] 2304
+```
+
+The total number of rows with missing values is 
+**2304**.
 
 **Strategy for the imputation of missing data:**
 
@@ -317,8 +365,8 @@ for (i in 1:nrow(data_1)) {
 }
 ```
 
-With the missing step counts replaced, make a histogram of the total number
-of steps taken each day for the case with imputed missing values.
+With the missing step counts replaced, we'll make a histogram of the total
+number of steps taken each day for the case with imputed missing values.
 
 
 ```r
@@ -443,26 +491,41 @@ weekdays and across all weekend days .
 
 
 ```r
+start_time <- strptime("00:00", "%H:%M")
 mean_steps_by_interval_by_day_type <- data_2 %>%
                                       group_by(day_type, interval) %>%
-                                      summarize(mean_steps = mean(steps))
+                                      summarize(mean_steps = mean(steps)) %>%
+                                      arrange(interval) %>%
+                                      mutate("time_of_day" = seq(start_time, 
+                                                                 length.out=288,
+                                                                 by="5 mins"
+                                                                )
+                                      )
 ```
 
 Make a panel plot containing a time series plot of the 5-minute interval
 (x-axis) and the average number of steps taken, averaged across all weekday
 days or weekend days (y-axis).
 
+**Note that as with the first time series plot, intervals on the
+x-axis are mapped to time of day.**
+
 
 ```r
-title_text <- "Time Series of the Five-minute Intervals Showing Average"
+title_text <- "Time Series at Five-minute Intervals Showing Average"
 title_text <- paste(title_text, "\nNumber of Steps Taken on")
 title_text <- paste(title_text, " Weekdays and Weekends")
 
-g <- ggplot(mean_steps_by_interval_by_day_type, aes(x=interval, y = mean_steps))
+g <- ggplot(mean_steps_by_interval_by_day_type, aes(x = time_of_day, 
+                                                    y = mean_steps))
 g <- g + geom_line(color = "blue")
 g <- g + facet_wrap(~ day_type, nrow = 2, ncol = 1)
-g <- g + labs(x = "Interval", y = "Average Steps Taken")
+g <- g + labs(x = "Time of Day", y = "Average Steps Taken")
 g <- g + labs(title = title_text)
+g <- g + scale_x_datetime(labels = date_format("%H:%M"), 
+                          breaks = "4 hours",
+                          minor_breaks = "1 hours"
+                         )
 plot(g)
 ```
 
