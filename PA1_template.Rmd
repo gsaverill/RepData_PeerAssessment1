@@ -7,7 +7,7 @@ output:
 
 ## Loading and preprocessing the data
 
-R librarys to load:
+Load the needed R libraries:
 
 ```{r}
 library(dplyr)
