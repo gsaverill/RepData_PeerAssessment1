@@ -188,12 +188,13 @@ There is a discontinuous jump from **55 to **00 every time the two
 least-significant digits of the interval reach 55 minutes.  We could just
 plot the step counts againt the raw interval values on the x-axis (and Dr.
 Peng's example panel plot appears to do just that with an x-axis range from 0
-to 2355), but I am going to choose to convert the interval format into time
-of day.  By doing this, datapoints will be plotted at consistent intevals on
-the x-axis as time progresses, and a bit of distoration from the **55 to **00
-jumps will be avoided.  This is a minor issue, but I think that mapping the
-interval number to time of day will result in a time series plot that is
-slightly more faithful to the source data.
+to 2355), but I am going to choose to convert the interval format into a
+POSIXct time of day variable.  By doing this, datapoints will be plotted at
+consistent intevals on the x-axis as time progresses, and a bit of
+distoration from the **55 to **00 jumps will be avoided.  This is a minor
+issue, but I think that mapping the interval number to time of day will
+result in a time series plot that is slightly more faithful to the source
+data.
 
 You can see that time_of_day is a new variable added to my data frame above.
 
